@@ -9,8 +9,11 @@ export type DocumentBoxConfig = {
 };
 
 export class DocumentBox extends Phaser.GameObjects.Container {
+  private docMargin: number = 5;
   private box: Phaser.GameObjects.Rectangle;
-  private text: Phaser.GameObjects.Text;
+  private boxPadding: number;
+  private taskText: Phaser.GameObjects.Text;
+  private yomiText: Phaser.GameObjects.Text;
 
   constructor(
     public scene: Phaser.Scene,
@@ -25,6 +28,7 @@ export class DocumentBox extends Phaser.GameObjects.Container {
     }: DocumentBoxConfig
   ) {
     super(scene, 0, 0);
+    this.boxPadding = padding;
 
     // 課題文枠の作成
     this.box = new Phaser.GameObjects.Rectangle(
@@ -37,7 +41,7 @@ export class DocumentBox extends Phaser.GameObjects.Container {
     ).setStrokeStyle(1, 0xffffff);
     this.add(this.box);
 
-    const boxWidth = width - padding * 2;
+    const boxWidth = width - this.boxPadding * 2;
     const DocumentBoxTextStyle = {
       ...textStyle,
       wordWrap: {
@@ -45,20 +49,38 @@ export class DocumentBox extends Phaser.GameObjects.Container {
         useAdvancedWrap: true,
       },
     };
-    const textX = x + padding;
-    const textY = y - height / 2 + padding;
-    this.text = new Phaser.GameObjects.Text(
+    const textX = x;
+    const textY = y - height / 2 + this.boxPadding;
+    this.taskText = new Phaser.GameObjects.Text(
       this.scene,
       textX,
       textY,
       "",
       DocumentBoxTextStyle
     ).setOrigin(0.5, 0);
-    this.add(this.text);
+    this.add(this.taskText);
+
+    console.log("initial: " + this.taskText.displayHeight);
+    this.yomiText = new Phaser.GameObjects.Text(
+      this.scene,
+      textX,
+      textY,
+      "",
+      DocumentBoxTextStyle
+    ).setOrigin(0.5, 0);
+    this.add(this.yomiText);
   }
 
   // 課題文章のセット
-  public setText(text: string) {
-    this.text.setText(text);
+  public setText(task: string, yomi: string) {
+    this.taskText.setText(task);
+    const yomiYPosition =
+      this.box.y -
+      this.box.height / 2 +
+      this.boxPadding +
+      this.docMargin +
+      this.taskText.displayHeight;
+    this.yomiText.setText(yomi);
+    this.yomiText.setY(yomiYPosition);
   }
 }

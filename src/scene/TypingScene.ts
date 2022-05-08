@@ -2,7 +2,7 @@ import { DocumentBox, DocumentBoxConfig } from "../class/DocumentBox";
 
 export class TypingScene extends Phaser.Scene {
   private static isJudgeOn: boolean = false;
-  private static taskString: string = "課題文章 - Task - 0123'";
+  private static taskString: string = "課題文章";
   private static taskYomiString: string = "かだいぶんしょう";
 
   constructor() {
@@ -15,28 +15,28 @@ export class TypingScene extends Phaser.Scene {
     const textStyle: Phaser.Types.GameObjects.Text.TextStyle = {
       fontFamily:
         '"Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif',
-      fontSize: "24px",
+      fontSize: "28px",
     };
-    // DialogBoxのコンフィグ
-    const dialogBoxHeight = 150;
-    const dialogBoxMargin = 20;
-    const dialogBoxConfig: DocumentBoxConfig = {
+    // DocumentBoxのコンフィグ
+    const documentBoxHeight = 250;
+    const documentBoxMargin = 20;
+    const documentBoxConfig: DocumentBoxConfig = {
       x: width / 2,
-      y: dialogBoxMargin + dialogBoxHeight / 2,
-      width: width - dialogBoxMargin * 2,
-      height: dialogBoxHeight,
+      y: documentBoxMargin + documentBoxHeight / 2,
+      width: width - documentBoxMargin * 2,
+      height: documentBoxHeight,
       padding: 20,
-      margin: dialogBoxMargin,
+      margin: documentBoxMargin,
       textStyle: textStyle,
     };
-    // DialogBoxの作成
-    const dialogBox = new DocumentBox(this, dialogBoxConfig);
+    // DocumentBoxの作成
+    const documentBox = new DocumentBox(this, documentBoxConfig);
 
     // テキストの設定
-    dialogBox.setText(TypingScene.taskString);
+    documentBox.setText(TypingScene.taskString, TypingScene.taskYomiString);
 
-    // DialogBoxの表示
-    this.add.existing(dialogBox);
+    // DocumentBoxの表示
+    this.add.existing(documentBox);
 
     // 判定
     TypingScene.isJudgeOn = true;
