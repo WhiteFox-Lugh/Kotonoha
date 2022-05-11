@@ -6,6 +6,7 @@ export type DocumentBoxConfig = {
   padding?: number;
   margin?: number;
   textStyle?: Phaser.Types.GameObjects.Text.TextStyle;
+  yomiTextStyle?: Phaser.Types.GameObjects.Text.TextStyle;
 };
 
 export class DocumentBox extends Phaser.GameObjects.Container {
@@ -25,6 +26,7 @@ export class DocumentBox extends Phaser.GameObjects.Container {
       padding = 20,
       margin = 20,
       textStyle = {},
+      yomiTextStyle = {},
     }: DocumentBoxConfig
   ) {
     super(scene, 0, 0);
@@ -42,8 +44,15 @@ export class DocumentBox extends Phaser.GameObjects.Container {
     this.add(this.box);
 
     const boxWidth = width - this.boxPadding * 2;
-    const DocumentBoxTextStyle = {
+    const taskTextStyle = {
       ...textStyle,
+      wordWrap: {
+        width: boxWidth,
+        useAdvancedWrap: true,
+      },
+    };
+    const taskYomiTextStyle = {
+      ...yomiTextStyle,
       wordWrap: {
         width: boxWidth,
         useAdvancedWrap: true,
@@ -56,17 +65,16 @@ export class DocumentBox extends Phaser.GameObjects.Container {
       textX,
       textY,
       "",
-      DocumentBoxTextStyle
+      taskTextStyle
     ).setOrigin(0.5, 0);
     this.add(this.taskText);
 
-    console.log("initial: " + this.taskText.displayHeight);
     this.yomiText = new Phaser.GameObjects.Text(
       this.scene,
       textX,
       textY,
       "",
-      DocumentBoxTextStyle
+      taskYomiTextStyle
     ).setOrigin(0.5, 0);
     this.add(this.yomiText);
   }
