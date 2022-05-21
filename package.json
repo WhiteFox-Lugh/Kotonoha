@@ -14,8 +14,14 @@
     "phaser3-rex-plugins": "^1.1.69"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.25.0",
+    "@typescript-eslint/parser": "^5.25.0",
     "copy-webpack-plugin": "^10.2.4",
+    "eslint": "^8.16.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-config-prettier": "^8.5.0",
     "html-webpack-plugin": "^5.5.0",
+    "prettier": "^2.6.2",
     "ts-loader": "^9.3.0",
     "typescript": "^4.6.4",
     "webpack": "^5.72.0",
