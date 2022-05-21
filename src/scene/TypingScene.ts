@@ -1,4 +1,7 @@
 import { DocumentBox, DocumentBoxConfig } from "../class/DocumentBox";
+import { TextEdit } from "phaser3-rex-plugins/plugins/textedit.js";
+import BBCodeText from "phaser3-rex-plugins/plugins/bbcodetext.js";
+import { GameObjects } from "phaser";
 
 export class TypingScene extends Phaser.Scene {
   private static isJudgeOn: boolean = false;
@@ -34,7 +37,7 @@ export class TypingScene extends Phaser.Scene {
     const yomiTextStyle: Phaser.Types.GameObjects.Text.TextStyle = {
       fontFamily:
         '"Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif',
-      fontSize: "22px",
+      fontSize: "20px",
     };
     // DocumentBoxのコンフィグ
     const documentBoxHeight = 250;
@@ -59,6 +62,31 @@ export class TypingScene extends Phaser.Scene {
 
     // DocumentBoxの表示
     this.add.existing(documentBox);
+
+    // input field
+    const inputY = documentBoxMargin * 2 + documentBoxHeight;
+    const inputWidth = width - documentBoxMargin * 2;
+    let textGameObject = new BBCodeText(this, width / 2, inputY, "", {
+      align: "center",
+      fixedHeight: 50,
+      fixedWidth: inputWidth,
+      backgroundColor: "#222222",
+      backgroundColor2: "#ffff00",
+      fontFamily:
+        '"Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif',
+      fontSize: "22px",
+      wrap: {
+        mode: "word",
+        width: inputWidth,
+      },
+    }).setOrigin(0.5, 0);
+
+    var editor = new TextEdit(textGameObject);
+    editor.open({
+      type: "text",
+      text: "",
+      enterClose: false,
+    });
 
     // 判定
     TypingScene.isJudgeOn = true;

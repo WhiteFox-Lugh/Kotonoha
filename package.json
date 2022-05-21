@@ -10,7 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "phaser": "^3.55.2"
+    "phaser": "^3.55.2",
+    "phaser3-rex-plugins": "^1.1.69"
   },
   "devDependencies": {
     "copy-webpack-plugin": "^10.2.4",
