@@ -1,13 +1,14 @@
 import * as Phaser from "phaser";
 import { Scenes } from "./scene";
-
 const config: Phaser.Types.Core.GameConfig = {
-  type: Phaser.AUTO, // webGLを使うかcanvasを使うかをphaserが自動で判断してくれる
+  type: Phaser.AUTO,
   width: 1280,
   height: 720,
-  //resolution: window.devicePixelRatio, // Retina環境で多少見た目がよくなる
-  parent: "game-app", // #game-app内にcanvasを生成
+  parent: "game-app",
   scene: Scenes,
+  dom: {
+    createContainer: true,
+  },
 };
 
 new Phaser.Game(config);
