@@ -68,36 +68,44 @@ export class TypingScene extends Phaser.Scene {
     // 入力フィールドの生成
     const inputY = this.documentBoxMargin * 2 + this.documentBoxHeight;
     const inputWidth = width - this.documentBoxMargin * 2;
-    const textGameObject = new BBCodeText(this, width / 2, inputY, "", {
-      align: "center",
-      fixedHeight: this.inputFieldHeight,
-      fixedWidth: inputWidth,
-      backgroundColor: this.inputFieldBgColor,
-      fontFamily: this.fontFamily,
-      fontSize: this.inputFieldFontSize,
-      wrap: {
-        mode: "word",
-        width: inputWidth,
-      },
-    }).setOrigin(0.5, 0);
-
+    const textGameObject = this.add
+      .text(width / 2, inputY, "", {
+        align: "center",
+        fixedHeight: this.inputFieldHeight,
+        fixedWidth: inputWidth,
+        backgroundColor: this.inputFieldBgColor,
+        fontFamily: this.fontFamily,
+        fontSize: this.inputFieldFontSize,
+      })
+      .setOrigin(0.5, 0)
+      .setInteractive();
     const editor = new TextEdit(textGameObject);
-    editor.open({
-      type: "text",
-      text: "",
-      enterClose: false,
-    });
+
+    textGameObject.on(
+      "pointerdown",
+      function () {
+        editor.open({
+          type: "text",
+          enterClose: false,
+          onTextChanged(_, text) {
+            textGameObject.text = text;
+          },
+        });
+      },
+      this
+    );
+    this.add.existing(textGameObject);
 
     // 判定
     TypingScene.isJudgeOn = true;
 
     // temp: クリックするとリザルトシーンへ遷移
-    const zone = this.add.zone(width / 2, height / 2, width, height);
-    zone.setInteractive({ useHandCursor: true });
-    zone.on("pointerdown", () => {
-      TypingScene.isJudgeOn = false;
-      this.scene.start("result");
-    });
+    // const zone = this.add.zone(width / 2, height / 2, width, height);
+    // zone.setInteractive({ useHandCursor: true });
+    // zone.on("pointerdown", () => {
+    //   TypingScene.isJudgeOn = false;
+    //   this.scene.start("result");
+    // });
   }
 
   /**
