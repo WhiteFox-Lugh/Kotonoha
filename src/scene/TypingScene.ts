@@ -17,6 +17,7 @@ export class TypingScene extends Phaser.Scene {
   private static lineNumber = 0;
   private static taskStringArr: string[] = [];
   private static taskYomiStringArr: string[] = [];
+  private static documentBox: DocumentBox;
 
   constructor() {
     super("typing");
@@ -27,6 +28,23 @@ export class TypingScene extends Phaser.Scene {
   }
 
   create() {
+    // 課題文読み込み
+    this.readTaskData();
+
+    // UI の初期化
+    this.initUI();
+
+    // テキストの設定
+    TypingScene.lineNumber = 0;
+    const firstTaskString = TypingScene.taskStringArr[0];
+    const firstTaskYomiString = TypingScene.taskYomiStringArr[0];
+    TypingScene.documentBox.setText(firstTaskString, firstTaskYomiString);
+
+    // 判定
+    TypingScene.isJudgeOn = true;
+  }
+
+  private initUI(): void {
     const { width, height } = this.game.canvas;
     const textStyle: Phaser.Types.GameObjects.Text.TextStyle = {
       fontFamily: this.fontFamily,
@@ -36,10 +54,6 @@ export class TypingScene extends Phaser.Scene {
       fontFamily: this.fontFamily,
       fontSize: this.yomiTextSize,
     };
-    TypingScene.lineNumber = 0;
-
-    // 課題文読み込み
-    this.readTaskData();
 
     // DocumentBox の生成
     const documentBoxPosX = width / 2;
@@ -55,49 +69,40 @@ export class TypingScene extends Phaser.Scene {
       textStyle: textStyle,
       yomiTextStyle: yomiTextStyle,
     };
-    const documentBox = new DocumentBox(this, documentBoxConfig);
-
-    // テキストの設定
-    const firstTaskString = TypingScene.taskStringArr[0];
-    const firstTaskYomiString = TypingScene.taskYomiStringArr[0];
-    documentBox.setText(firstTaskString, firstTaskYomiString);
-
-    // DocumentBoxの表示
-    this.add.existing(documentBox);
+    TypingScene.documentBox = new DocumentBox(this, documentBoxConfig);
+    this.add.existing(TypingScene.documentBox);
 
     // 入力フィールドの生成
     const inputY = this.documentBoxMargin * 2 + this.documentBoxHeight;
     const inputWidth = width - this.documentBoxMargin * 2;
-    const textGameObject = new BBCodeText(this, width / 2, inputY, "", {
-      align: "center",
-      fixedHeight: this.inputFieldHeight,
-      fixedWidth: inputWidth,
-      backgroundColor: this.inputFieldBgColor,
-      fontFamily: this.fontFamily,
-      fontSize: this.inputFieldFontSize,
-      wrap: {
-        mode: "word",
-        width: inputWidth,
-      },
-    }).setOrigin(0.5, 0);
+    const textGameObject = this.add
+      .text(width / 2, inputY, "", {
+        align: "center",
+        fixedHeight: this.inputFieldHeight,
+        fixedWidth: inputWidth,
+        backgroundColor: this.inputFieldBgColor,
+        fontFamily: this.fontFamily,
+        fontSize: this.inputFieldFontSize,
+      })
+      .setOrigin(0.5, 0)
+      .setInteractive();
 
     const editor = new TextEdit(textGameObject);
-    editor.open({
-      type: "text",
-      text: "",
-      enterClose: false,
-    });
 
-    // 判定
-    TypingScene.isJudgeOn = true;
-
-    // temp: クリックするとリザルトシーンへ遷移
-    const zone = this.add.zone(width / 2, height / 2, width, height);
-    zone.setInteractive({ useHandCursor: true });
-    zone.on("pointerdown", () => {
-      TypingScene.isJudgeOn = false;
-      this.scene.start("result");
-    });
+    textGameObject.on(
+      "pointerdown",
+      function () {
+        editor.open({
+          type: "text",
+          enterClose: false,
+          onTextChanged(_, text) {
+            textGameObject.text = text;
+          },
+        });
+      },
+      this
+    );
+    this.add.existing(textGameObject);
   }
 
   /**
